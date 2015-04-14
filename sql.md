@@ -169,3 +169,95 @@ WHERE NOT column LIKE '[JK]%'; -- 不匹配J或K开头
 -- 如确实需要使用通配符，不要将它们放在搜索模式的开始处，河阳搜索起来最慢
 -- 注意通配符位置，不然可能无法返回想要的数据
 ```
+
+* 计算字段
+
+```ruby
+
+-- 拼接字段
+SELECT column_1 + ':' + column_2
+FROM table;
+
+SELECT column_1 || ':' || column_2
+FROM table;
+
+SELECT RTRIM(column_1) + ':' + column_2  -- 去掉column_1右边空格
+FROM table;
+
+SELECT column_1 + ':' + column_2 AS column -- AS 可选不过，最好都加上，最佳实践
+FROM table;
+
+SELECT column_1, column_2 * 100 AS column -- 支持+-*/
+FROM table;
+
+-- 应否使用函数？
+-- 取决于自身。因为函数可移植性不好，但又比较简单高效（相对于在应用程序里实现）
+-- 如用了函数，应注释清楚
+
+-- 文本处理函数：LEFT(), LENGTH(), LOWER(), LTRIM(), RIGHT(), RTRIM(), SOUNDEX(), SOUNDEX
+-- 日期时间处理函数：各DBMS很不一致，移植性差
+
+-- MySQL MariaDB
+SELECT column
+FROM table
+WHERE YEAR(column_date) = 2015
+
+-- postgresql
+SELECT column
+FROM table
+WHERE DATE_PART('year', column_date) = 2015; -- 各DBMS处理方式不同，详见文档
+
+-- 数值处理函数：各DBMS最一致，ABS(), COS(), EXP(), PI(), SIN(), SQRT(), TAN()
+
+-- 聚集函数
+
+-- AVG()：只能用于单列，如为了获得多列的avg，需使用多个AVG()；忽略值为NULL的行
+SELECT AVG(column) AS avg_column
+FROM table
+
+SELECT AVG(column) AS avg_column
+FROM table
+WHERE column = value
+
+-- COUNT()：计数
+-- COUNT(*) 对表中的行计数，不管列中是否包含NULL，不忽略NULL
+-- COUNT(column) 对特定的列中具有值的行计数，忽略NULL
+
+SELECT COUNT(*) as num
+FROM table
+
+SELECT COUNT(column) as num_column
+FROM table
+
+-- MAX()：指定列中的最大值，忽略值为NULL的行
+-- MIN()：指定列中的最小值，忽略值为NULL的行
+-- 对非数值使用，如文本，返回的是列排序后最后（MAX）或最前（MIN）的行
+
+SELECT MAX(column) AS max_column
+FROM table
+
+SELECT MIN(column) AS min_column
+FROM table
+
+-- SUM()：求和，会忽略值为NULL的行
+SELECT SUM(column) AS sum_column
+FROM table
+
+SELECT SUM(column_1 * column_2) AS sum_column
+FROM table
+WHERE column_1 = value
+
+-- DISTINCT: 只包含不同的值
+-- DISTINCT 不能用于COUNT(*)
+-- DISTINCT 必须使用列名，不能用于计算或表达式
+
+SELECT AVG(DISTINCT column) AS avg_column
+FROM table
+
+SELECT COUNT(*) AS num_column
+      MIN(column) AS min_column
+      MAX(column) AS max_column
+      AVG(column) AS avg_column
+      SUM(column) AS sum_column
+FROM table
+```
