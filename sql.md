@@ -259,5 +259,65 @@ SELECT COUNT(*) AS num_column
       MAX(column) AS max_column
       AVG(column) AS avg_column
       SUM(column) AS sum_column
-FROM table;
+	  FROM table;
+
+-- 分组
+-- GROUP BY: GROUP BY子句必须出现在WHERE子句之后, ORDER BY子句之前
+-- 可以包含任意数目的列, 所以可以对分组进行嵌套, 更细致地进行分组
+-- 如果在GROUP BY子句中嵌套了分组, 数据将在最后指定的分组汇总
+-- GROUP BY列出的每一列都必须是检索列或有效的表达式(但不能是表达函数)
+-- 如果在SELECT中使用表达式, 则在GROUP BY子句中也使用相同的表达式
+-- 大多数SQL实现不允许GROUP BY列带有长度可变的数据类型(如文本或备注类型)
+-- 除聚集计算语句外, SELECT语句中的每一列都必须在GROUP BY子句中给出
+-- 如果分组列中包含具有NULL值的行, 则NULL将作为一个分组返回
+
+-- ORDER BY 和 GROUP BY的区别
+-- ORDER BY 对产生的输出排序; GROUP BY 对行分组, 但输出可能不是分组的排序
+-- ORDER BY 对任意列都可以使用; GROUP BY只能使用选择的列或表达式(SELECT), 而且必须使用每个选择列表达式
+-- ORDER BY 不一定需要; 如果和聚集函数一起使用列(或表达式), 怎必须使用
+
+SELECT column, COUNT(*) AS num_column
+FROM table
+GROUP BY column
+
+-- HAVING: 使用HAVING应该结合GROUP BY子句
+-- WHERE子句指定的是行, 它没有分组的功能
+-- HAVING子句类似WHERE, 很多WHERE子句都可以由HAVING代替实现(语法相同, 关键有差别而已)
+-- HAVING支持所有WHERE操作符
+-- WHERE过滤行, HAVING过滤分组
+-- WHERE在数据分组前过滤, HAVING在数据分组后过滤
+
+SELECT column, COUNT(\*) AS cn_column
+FROM table
+GROUP BY column
+HAVING COUNT(\*) >= 2
+
+SELECT column, COUNT(*) AS cn_column
+FROM table
+WHERE column > 2
+GROUP BY column
+HAVING COUNT(\*) >= 2
+
+```
+
+* SELECT子句及其顺序
+
+| 子句      | 说明             | 是否必须使用           |
+|----------|------------------|-----------------------|
+| SELECT   | 要返回的列或表达式 | 是                    |
+|----------|------------------|-----------------------|
+| FROM     | 从中检索数据的表   | 仅在从表里选择数据时使用 |
+|----------|------------------|-----------------------|
+| WHERE    | 行级过滤          | 否                    |
+|----------|------------------|-----------------------|
+| GROUP BY | 分组说明          | 尽在按分组计算聚集时使用 |
+|----------|------------------|-----------------------|
+| HAVING   | 组级过滤          | 否                    |
+|----------|------------------|-----------------------|
+| ORDER BY | 输出顺序排序       | 否                    |
+
+* 联结
+
+```sql
+
 ```
