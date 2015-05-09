@@ -41,3 +41,27 @@
 * `rails c`
 
 * `validates` 是一个方法名
+
+* `<%= debug(params) if Rails.env.development? %>`
+
+* `gem 'byebug'`, `debugger`
+
+* `params.require(:user).permit(:name, :email, :password, :password_confirmation)`, don't use `params[:user]`
+
+* `user.errors.full_messages`
+
+* `<%= form_for(@user) do |f| %>`
+
+* `form_for(:session, url: login_path)`
+
+* `<%= link_to "Log out", logout_path, method: "delete" %>`
+
+* `session[:user_id] = user.id`
+
+* `session.delete(:user_id)`, ``@current_user = nil`
+
+* `cookies.permanent.signed[:user_id] = user.id`
+
+* `User.find_by(id: cookies.signed[:user_id])`
+
+* `params[:session][:remember_me] == '1' ? remember(user) : forget(user)`
